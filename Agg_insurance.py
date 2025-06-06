@@ -28,7 +28,7 @@ for state in Agg_insure_list:
                 column3['Transacion_Name'].append(Name)
                 column3['Transacion_count'].append(count)
                 column3['Transacion_amount'].append(amount)
-                column3['State'].append(file)
+                column3['State'].append(state)
                 column3['Year'].append(year)
                 column3['Quarter'].append(int(file.strip('.json')))
 

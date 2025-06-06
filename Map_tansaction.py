@@ -9,13 +9,13 @@ column4 = {'State' : [], 'Year':[], 'Quarter' : [], 'District' : [], 'Transactio
 
 for state in map_trans_list:
     cur_state = path4 + state + '/'
-    Agg_year_list = os.listdir(cur_state)
+    map_year_list = os.listdir(cur_state)
     
-    for year in Agg_year_list:
+    for year in map_year_list:
         cur_year = cur_state + year + '/'
-        Agg_file_list = os.listdir(cur_year)
+        map_file_list = os.listdir(cur_year)
 
-        for file in Agg_file_list:
+        for file in map_file_list:
             cur_file = cur_year + file
             data = open (cur_file,'r') 
 
@@ -28,7 +28,7 @@ for state in map_trans_list:
                 column4['District'].append(Name)
                 column4['Transaction_count'].append(Count)
                 column4['Transaction_amount'].append(amount)
-                column4['State'].append(file)
+                column4['State'].append(state)
                 column4['Year'].append(year)
                 column4['Quarter'].append(int(file.strip('.json')))
 

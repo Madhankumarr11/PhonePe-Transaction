@@ -40,7 +40,7 @@ for state in Agg_trans_list:
                 column1['Transacion_type'].append(Name)
                 column1['Transacion_count'].append(count)
                 column1['Transacion_amount'].append(amount)
-                column1['State'].append(file)
+                column1['State'].append(state)
                 column1['Year'].append(year)
                 column1['Quarter'].append(int(file.strip('.json')))
 

@@ -29,7 +29,7 @@ for state in Agg_user_list:
                     column2['Brand'].append(brand)
                     column2['Transacion_count'].append(count)
                     column2['Percentage'].append(percentage)
-                    column2['State'].append(file)
+                    column2['State'].append(state)
                     column2['Year'].append(year)
                     column2['Quarter'].append(int(file.strip('.json')))
             except:

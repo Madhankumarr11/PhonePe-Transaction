@@ -5,38 +5,38 @@ import pandas as pd
 path5 = "D:/SRMK/Guvi/PhonePe-Transaction/pulse/data/map/user/hover/country/india/state/"
 map_user_list = os.listdir(path5)
 
-# column5 = {'State' : [], 'Year':[], 'Quarter' : [], 'District' : [], 'Transaction_count': [], 'Transaction_amount': []}
+column5 = {'State' : [], 'Year':[], 'Quarter' : [], 'District' : [], 'RegisteredUsers': [], 'AppOpens': []}
 
 for state in map_user_list:
     cur_state = path5 + state + '/'
-    Agg_year_list = os.listdir(cur_state)
+    map_year_list = os.listdir(cur_state)
     
-    for year in Agg_year_list:
+    for year in map_year_list:
         cur_year = cur_state + year + '/'
-        Agg_file_list = os.listdir(cur_year)
+        map_file_list = os.listdir(cur_year)
 
-        for file in Agg_file_list:
+        for file in map_file_list:
             cur_file = cur_year + file
             data = open (cur_file,'r') 
 
             E = json.load (data)
 
-#             for i in D['data']['hoverDataList']:
-#                 Name = i['name']
-#                 Count = i['metric'][0]['count']
-#                 amount = i['metric'][0]['amount']
-#                 column4['District'].append(Name)
-#                 column4['Transaction_count'].append(Count)
-#                 column4['Transaction_amount'].append(amount)
-#                 column4['State'].append(file)
-#                 column4['Year'].append(year)
-#                 column4['Quarter'].append(int(file.strip('.json')))
+            for i in E['data']['hoverData'].items():
+                district = i[0]
+                registeredUsers = i[1]['registeredUsers']
+                appOpens = i[1]['appOpens']
+                column5['District'].append(district)
+                column5['RegisteredUsers'].append(registeredUsers)
+                column5['AppOpens'].append(appOpens)
+                column5['State'].append(state)
+                column5['Year'].append(year)
+                column5['Quarter'].append(int(file.strip('.json')))
 
 
-# #Succesfully created a dataframe
-# Map_transaction = pd.DataFrame(column4)
+#Succesfully created a dataframe
+Map_user = pd.DataFrame(column5)
 
-# print(Map_transaction)
+print(Map_user)
 
 
                 
