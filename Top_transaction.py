@@ -19,9 +19,9 @@ for state in top_transaction_list:
             cur_file = cur_year + file
             data = open(cur_file,'r')
 
-            G = json.load(data)
+            H = json.load(data)
 
-            for i in G['data']['pincodes']:
+            for i in H['data']['pincodes']:
                 entityname = i['entityName']
                 count = i['metric']['count']
                 amount = i['metric']['amount']

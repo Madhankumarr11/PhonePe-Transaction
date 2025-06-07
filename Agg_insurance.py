@@ -19,9 +19,9 @@ for state in Agg_insure_list:
             cur_file = cur_year + file
             data = open (cur_file, 'r')
 
-            C = json.load(data)
+            A = json.load(data)
 
-            for i in C['data']['transactionData']:
+            for i in A['data']['transactionData']:
                 Name = i['name']
                 count = i['paymentInstruments'][0]['count']
                 amount = i['paymentInstruments'][0]['amount']

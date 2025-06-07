@@ -19,10 +19,10 @@ for state in Agg_user_list:
             cur_file = cur_year + file
             data = open (cur_file, 'r')
 
-            B = json.load(data)
+            C = json.load(data)
 
             try:
-                for i in B['data']['usersByDevice']:
+                for i in C['data']['usersByDevice']:
                     brand = i['brand']
                     count = i['count']
                     percentage = i['percentage']

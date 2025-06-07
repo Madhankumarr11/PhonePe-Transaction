@@ -19,9 +19,9 @@ for state in map_insurance_list:
             cur_file = cur_year + file
             data = open(cur_file,'r')
 
-            F = json.load(data)
+            D = json.load(data)
 
-            for i in F['data']['hoverDataList']:
+            for i in D['data']['hoverDataList']:
                 name = i['name']
                 count = i['metric'][0]['count']
                 amount = i['metric'][0]['amount']

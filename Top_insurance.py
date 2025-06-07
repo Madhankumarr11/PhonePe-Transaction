@@ -19,9 +19,9 @@ for state in top_insurance_list:
             cur_file = cur_year + file
             data = open(cur_file,'r')
 
-            H = json.load(data)
+            G = json.load(data)
 
-            for i in H['data']['pincodes']:
+            for i in G['data']['pincodes']:
                 entityname = i['entityName']
                 count = i['metric']['count']
                 amount = i['metric']['amount']

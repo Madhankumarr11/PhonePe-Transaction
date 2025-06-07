@@ -19,9 +19,9 @@ for state in map_user_list:
             cur_file = cur_year + file
             data = open (cur_file,'r') 
 
-            E = json.load (data)
+            F = json.load (data)
 
-            for i in E['data']['hoverData'].items():
+            for i in F['data']['hoverData'].items():
                 district = i[0]
                 registeredUsers = i[1]['registeredUsers']
                 appOpens = i[1]['appOpens']

@@ -31,9 +31,9 @@ for state in Agg_trans_list:
             data = open (cur_file,'r')     # Open to read mode
             # read = data.read()           # read issue clear code
             
-            A = json.load(data)             #loads JSON content into a Python dict
+            B = json.load(data)             #loads JSON content into a Python dict
 
-            for i in A['data']['transactionData']:
+            for i in B['data']['transactionData']:
                 Name = i['name']
                 count = i['paymentInstruments'][0]['count']
                 amount = i['paymentInstruments'][0]['amount']

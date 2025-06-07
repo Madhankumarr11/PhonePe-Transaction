@@ -19,9 +19,9 @@ for state in map_trans_list:
             cur_file = cur_year + file
             data = open (cur_file,'r') 
 
-            D = json.load (data)
+            E = json.load (data)
 
-            for i in D['data']['hoverDataList']:
+            for i in E['data']['hoverDataList']:
                 Name = i['name']
                 Count = i['metric'][0]['count']
                 amount = i['metric'][0]['amount']
