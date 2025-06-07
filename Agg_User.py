@@ -69,7 +69,7 @@ cursor.execute ('''create table Agg_User
                 Quarter int, 
                 Brand varchar(255), 
                 Transaction_count bigint,
-                Percentage bigint)''')
+                Percentage Float)''')
 
 insert_query3 ='''insert into Agg_User (State, Year, Quarter, Brand, Transaction_count, Percentage)
 values (%s, %s, %s, %s, %s, %s)'''
