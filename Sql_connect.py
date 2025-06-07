@@ -5,32 +5,31 @@ import psycopg2
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
 connect = psycopg2.connect(
-    host = "localhost",
-    user = 'postgres',
-    database = 'Phonepy_Transaction',
-    port = '5432',
-    password = '01234'
-    
+     host = "localhost",
+     user = 'postgres',
+     port = '5432',
+     password = '01234',
+     database = 'phonepy_transaction'
 )
 
-connect.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+connect.set_isolation_level (ISOLATION_LEVEL_AUTOCOMMIT)
 
-
-#cursor --> Intermediator for python and postgres database
 cursor = connect.cursor()
 
-# cursor.execute("CREATE DATABASE Phonepy_Transaction")
+cursor.execute ('''create table Agg_User
+                (State varchar(255), 
+                Year int, 
+                Quarter int, 
+                Brand varchar(255), 
+                Transaction_count bigint,
+                Percentage bigint)''')
 
-# cursor.execute("DROP TABLE IF EXISTS Agg_insurance")
+insert_query3 = '''inser into Agg_User(State, Year, Quarter, Brand, Transaction_count, Percentage)
+values = (%s, %s, %s, %s, %s, %s)'''
 
+data = Agg_User.values.tolist()
 
-cursor.execute('''create table Agg_insurance 
-               (States varchar(255),
-               Year int,
-               Quarter int,
-               Transacion_Name varchar(255),
-               Transacion_count bigint,
-               Transacion_amount bigint)''')
+cursor.executemany(insert_query3, data)
 
 connect.commit()
 cursor.close()
