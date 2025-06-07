@@ -1,6 +1,8 @@
 import os
 import json
 import pandas as pd
+import psycopg2
+from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
 path8 = 'D:/SRMK/Guvi/PhonePe-Transaction/pulse/data/top/transaction/country/india/state/'
 top_transaction_list = os.listdir(path8)
@@ -42,5 +44,34 @@ Top_transaction['State'] = Top_transaction['State'].str.replace('-', ' ')
 Top_transaction['State'] = Top_transaction['State'].str.title()
 Top_transaction['State'] = Top_transaction['State'].str.replace('dadra-&-nagar-haveli-&-daman-&-diu', 'dadra and nagar haveli and daman and diu')
 
+connect = psycopg2.connect(
+     host = "localhost",
+     user = 'postgres',
+     port = '5432',
+     password = '01234',
+     database = 'phonepy_transaction'
+)
 
+connect.set_isolation_level (ISOLATION_LEVEL_AUTOCOMMIT)
+
+cursor = connect.cursor()
+
+cursor.execute ('''create table Top_transaction
+                (State varchar(255), 
+                Year int, 
+                Quarter int, 
+                Pincode bigint, 
+                Transaction_count bigint,
+                Transaction_amount bigint)''')
+
+insert_query8 = '''insert into Top_transaction(State, Year, Quarter, Pincode, Transaction_count, Transaction_amount)
+values (%s, %s, %s, %s, %s, %s)'''
+
+data = Top_transaction.values.tolist()
+
+cursor.executemany(insert_query8, data)
+
+connect.commit()
+cursor.close()
+connect.close()
 

@@ -2,6 +2,7 @@ import os
 import json
 import pandas as pd
 import psycopg2
+
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
 #Once created the clone of GIT-HUB repository then,

@@ -1,6 +1,8 @@
 import os
 import json
 import pandas as pd
+import psycopg2
+from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
 path7 = "D:/SRMK/Guvi/PhonePe-Transaction/pulse/data/top/insurance/country/india/state/"
 top_insurance_list = os.listdir(path7)
@@ -33,12 +35,42 @@ for state in top_insurance_list:
                 column7['Quarter'].append(int(file.strip('.json')))
 
 #Succesfully created a dataframe
-Top_transaction = pd.DataFrame(column7)
+Top_insurance = pd.DataFrame(column7)
 
-print(Top_transaction)
+print(Top_insurance)
 
-Top_transaction['State'] = Top_transaction['State'].str.replace('andaman-&-nicobar-islands', 'Andaman & Nicobar')
-Top_transaction['State'] = Top_transaction['State'].str.replace('-', ' ')
-Top_transaction['State'] = Top_transaction['State'].str.title()
-Top_transaction['State'] = Top_transaction['State'].str.replace('dadra-&-nagar-haveli-&-daman-&-diu', 'dadra and nagar haveli and daman and diu')
+Top_insurance['State'] = Top_insurance['State'].str.replace('andaman-&-nicobar-islands', 'Andaman & Nicobar')
+Top_insurance['State'] = Top_insurance['State'].str.replace('-', ' ')
+Top_insurance['State'] = Top_insurance['State'].str.title()
+Top_insurance['State'] = Top_insurance['State'].str.replace('dadra-&-nagar-haveli-&-daman-&-diu', 'dadra and nagar haveli and daman and diu')
 
+connect = psycopg2.connect(
+     host = "localhost",
+     user = 'postgres',
+     port = '5432',
+     password = '01234',
+     database = 'phonepy_transaction'
+)
+
+connect.set_isolation_level (ISOLATION_LEVEL_AUTOCOMMIT)
+
+cursor = connect.cursor()
+
+cursor.execute ('''create table Top_insurance
+                (State varchar(255), 
+                Year int, 
+                Quarter int, 
+                Pincode bigint, 
+                Transaction_count bigint,
+                Transaction_amount bigint)''')
+
+insert_query7 = '''insert into Top_insurance(State, Year, Quarter, Pincode, Transaction_count, Transaction_amount)
+values (%s, %s, %s, %s, %s, %s)'''
+
+data = Top_insurance.values.tolist()
+
+cursor.executemany(insert_query7, data)
+
+connect.commit()
+cursor.close()
+connect.close()

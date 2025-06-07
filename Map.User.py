@@ -1,6 +1,8 @@
 import os
 import json
 import pandas as pd
+import psycopg2
+from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
 path6 = "D:/SRMK/Guvi/PhonePe-Transaction/pulse/data/map/user/hover/country/india/state/"
 map_user_list = os.listdir(path6)
@@ -44,5 +46,34 @@ Map_user['State'] = Map_user['State'].str.title()
 Map_user['State'] = Map_user['State'].str.replace('dadra-&-nagar-haveli-&-daman-&-diu', 'dadra and nagar haveli and daman and diu')
 
 
-                
+connect = psycopg2.connect(
+     host = "localhost",
+     user = 'postgres',
+     port = '5432',
+     password = '01234',
+     database = 'phonepy_transaction'
+)
+
+connect.set_isolation_level (ISOLATION_LEVEL_AUTOCOMMIT)
+
+cursor = connect.cursor()
+
+cursor.execute ('''create table if not exists Map_user
+                (State varchar(255), 
+                Year int, 
+                Quarter int, 
+                District varchar(255), 
+                RegisteredUsers bigint,
+                AppOpens bigint)''')
+
+insert_query6 = '''insert into Map_user(State, Year, Quarter, District, RegisteredUsers, AppOpens)
+values (%s, %s, %s, %s, %s, %s)'''
+
+data = Map_user.values.tolist()
+
+cursor.executemany(insert_query6, data)
+
+connect.commit()
+cursor.close()
+connect.close()             
         
