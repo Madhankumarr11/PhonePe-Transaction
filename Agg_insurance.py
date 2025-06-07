@@ -67,14 +67,14 @@ cursor = connect.cursor()
 
 
 cursor.execute('''create table Agg_insurance 
-               (States varchar(255),
+               (State varchar(255),
                Year int,
                Quarter int,
                Transaction_Name varchar(255),
                Transaction_count bigint,
                Transaction_amount bigint)''')
 
-insert_query ='''insert into Agg_insurance (States, Year, Quarter, Transaction_Name, Transaction_count, Transaction_amount)
+insert_query ='''insert into Agg_insurance (State, Year, Quarter, Transaction_Name, Transaction_count, Transaction_amount)
 values (%s, %s, %s, %s, %s, %s)'''
 
 data = Agg_insurance.values.tolist()
