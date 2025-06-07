@@ -2,13 +2,13 @@ import os
 import json
 import pandas as pd
 
-path3 = 'D:/SRMK/Guvi/PhonePe-Transaction/pulse/data/aggregated/insurance/country/india/state/'
-Agg_insure_list = os.listdir(path3)
+path1 = 'D:/SRMK/Guvi/PhonePe-Transaction/pulse/data/aggregated/insurance/country/india/state/'
+Agg_insure_list = os.listdir(path1)
 
-column3 = {'State': [], 'Year': [], 'Quarter': [], 'Transacion_Name' : [], 'Transacion_count':[], 'Transacion_amount':[] }
+column1 = {'State': [], 'Year': [], 'Quarter': [], 'Transacion_Name' : [], 'Transacion_count':[], 'Transacion_amount':[] }
 
 for state in Agg_insure_list:
-    cur_state = path3 + state + '/'
+    cur_state = path1 + state + '/'
     Agg_year_list = os.listdir(cur_state)
 
     for year in Agg_year_list:
@@ -25,15 +25,20 @@ for state in Agg_insure_list:
                 Name = i['name']
                 count = i['paymentInstruments'][0]['count']
                 amount = i['paymentInstruments'][0]['amount']
-                column3['Transacion_Name'].append(Name)
-                column3['Transacion_count'].append(count)
-                column3['Transacion_amount'].append(amount)
-                column3['State'].append(state)
-                column3['Year'].append(year)
-                column3['Quarter'].append(int(file.strip('.json')))
+                column1['Transacion_Name'].append(Name)
+                column1['Transacion_count'].append(count)
+                column1['Transacion_amount'].append(amount)
+                column1['State'].append(state)
+                column1['Year'].append(year)
+                column1['Quarter'].append(int(file.strip('.json')))
 
                 
 #Succesfully created a dataframe
-Agg_insurance = pd.DataFrame(column3)
+Agg_insurance = pd.DataFrame(column1)
 
 print(Agg_insurance)
+
+Agg_insurance['State'] = Agg_insurance['State'].str.replace('andaman-&-nicobar-islands', 'Andaman & Nicobar')
+Agg_insurance['State'] = Agg_insurance['State'].str.replace('-', ' ')
+Agg_insurance['State'] = Agg_insurance['State'].str.title()
+Agg_insurance['State'] = Agg_insurance['State'].str.replace('dadra-&-nagar-haveli-&-daman-&-diu', 'dadra and nagar haveli and daman and diu')

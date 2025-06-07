@@ -35,4 +35,10 @@ Top_User = pd.DataFrame(column9)
 
 print(Top_User)
 
+Top_User['State'] = Top_User['State'].str.replace('andaman-&-nicobar-islands', 'Andaman & Nicobar')
+Top_User['State'] = Top_User['State'].str.replace('-', ' ')
+Top_User['State'] = Top_User['State'].str.title()
+Top_User['State'] = Top_User['State'].str.replace('dadra-&-nagar-haveli-&-daman-&-diu', 'dadra and nagar haveli and daman and diu')
+
+
 

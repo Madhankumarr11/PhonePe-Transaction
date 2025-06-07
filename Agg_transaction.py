@@ -7,8 +7,8 @@ import pandas as pd
 
 #This is to direct the path to get the data as states
 
-path1 = "D:/SRMK/Guvi/PhonePe-Transaction/pulse/data/aggregated/transaction/country/india/state/"
-Agg_trans_list = os.listdir(path1)
+path2 = "D:/SRMK/Guvi/PhonePe-Transaction/pulse/data/aggregated/transaction/country/india/state/"
+Agg_trans_list = os.listdir(path2)
 
 # #Agg_state_list--> to get the list of states in India
 
@@ -16,10 +16,10 @@ Agg_trans_list = os.listdir(path1)
 
 # #This is to extract the data's to create a dataframe
 
-column1 = {'State' : [], 'Year':[], 'Quarter' : [], 'Transacion_type':[], 'Transacion_count':[], 'Transacion_amount':[]} 
+column2 = {'State' : [], 'Year':[], 'Quarter' : [], 'Transacion_type':[], 'Transacion_count':[], 'Transacion_amount':[]} 
 
 for state in Agg_trans_list:
-    cur_state = path1 + state + '/'
+    cur_state = path2 + state + '/'
     Agg_year_list = os.listdir(cur_state)
     
     for year in Agg_year_list:
@@ -37,15 +37,20 @@ for state in Agg_trans_list:
                 Name = i['name']
                 count = i['paymentInstruments'][0]['count']
                 amount = i['paymentInstruments'][0]['amount']
-                column1['Transacion_type'].append(Name)
-                column1['Transacion_count'].append(count)
-                column1['Transacion_amount'].append(amount)
-                column1['State'].append(state)
-                column1['Year'].append(year)
-                column1['Quarter'].append(int(file.strip('.json')))
+                column2['Transacion_type'].append(Name)
+                column2['Transacion_count'].append(count)
+                column2['Transacion_amount'].append(amount)
+                column2['State'].append(state)
+                column2['Year'].append(year)
+                column2['Quarter'].append(int(file.strip('.json')))
 
                 
 #Succesfully created a dataframe
-Agg_Transaction = pd.DataFrame(column1)
+Agg_Transaction = pd.DataFrame(column2)
 
 print(Agg_Transaction)
+
+Agg_Transaction['State'] = Agg_Transaction['State'].str.replace('andaman-&-nicobar-islands', 'Andaman & Nicobar')
+Agg_Transaction['State'] = Agg_Transaction['State'].str.replace('-', ' ')
+Agg_Transaction['State'] = Agg_Transaction['State'].str.title()
+Agg_Transaction['State'] = Agg_Transaction['State'].str.replace('dadra-&-nagar-haveli-&-daman-&-diu', 'dadra and nagar haveli and daman and diu')
