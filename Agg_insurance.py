@@ -75,11 +75,16 @@ cursor.execute('''create table Agg_insurance
                Transaction_amount bigint)''')
 
 insert_query ='''insert into Agg_insurance (State, Year, Quarter, Transaction_Name, Transaction_count, Transaction_amount)
-values (%s, %s, %s, %s, %s, %s)'''
+values (%s, %s, %s, %s, %s, %s)'''   
 
-data = Agg_insurance.values.tolist()
+# இங்கே %s என்பதற்காக actual values later pass பண்ண போறீங்க.
 
-cursor.executemany(insert_query, data)
+# இது parameterized query — SQL injection error avoid பண்ண இது safe method.
+
+data = Agg_insurance.values.tolist()     #.values → DataFrame-ல இருக்குற values (without column names)-ஐ numpy array-ஆக் கொடுக்கும்.
+                                         # DataFrame-ல உள்ள எல்லா row-களையும் list of lists-ஆ மாற்றும்
+
+cursor.executemany(insert_query, data)   #ஒரு நேரத்தில பல rows-ஐ database-க்கு insert பண்ணும்
 
 connect.commit()
 cursor.close()

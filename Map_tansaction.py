@@ -57,7 +57,7 @@ connect.set_isolation_level (ISOLATION_LEVEL_AUTOCOMMIT)
 
 cursor = connect.cursor()
 
-cursor.execute ('''create table if not exists Map_transaction
+cursor.execute ('''create table Map_transaction
                 (State varchar(255), 
                 Year int, 
                 Quarter int, 
