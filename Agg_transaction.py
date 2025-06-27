@@ -38,7 +38,7 @@ for state in Agg_trans_list:
 
             for i in B['data']['transactionData']:
                 Name = i['name']
-                count = i['paymentInstruments'][0]['count']
+                count = i['paymentInstruments'][0]['count']  # if there list use index value
                 amount = i['paymentInstruments'][0]['amount']
                 column2['Transaction_type'].append(Name)
                 column2['Transaction_count'].append(count)

@@ -23,7 +23,7 @@ for state in Agg_user_list:
 
             C = json.load(data)
 
-            try:
+            try: # Nonu type Hnadle method
                 for i in C['data']['usersByDevice']:
                     brand = i['brand']
                     count = i['count']
