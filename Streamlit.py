@@ -7,6 +7,7 @@ from streamlit_option_menu import option_menu
 import matplotlib.pyplot as plt
 import plotly.express as px
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
+import requests
 
 import os
 import json
@@ -108,7 +109,6 @@ tabel9 = cursor.fetchall()
 Top_User = pd.DataFrame(tabel9, columns=('State', 'Year', 'Quarter', 'Pincode', 'RegisteredUsers'))
 
 
-
 def Transaction_amount_count_Y(df, year):
 
 
@@ -124,14 +124,115 @@ def Transaction_amount_count_Y(df, year):
     with col1:
 
         fig_amount = px.bar(tacyg, x='State', y='Transaction_amount', title =f'{year} Transaction Amount', 
-                            color_discrete_sequence= px.colors.sequential.Aggrnyl,height=650, width=600)
+                            color_discrete_sequence= px.colors.sequential.Aggrnyl, height=650, width=600)
         st.plotly_chart(fig_amount)
 
     with col2:    
 
         fig_count = px.bar(tacyg,x = 'State', y='Transaction_count', title =f'{year} Transaction Count',
-                        color_discrete_sequence= px.colors.sequential.Peach_r, height=650, width=600)
+                        color_discrete_sequence= px.colors.sequential.Bluered_r, height=650, width=600)
         st.plotly_chart(fig_count)
+
+    col1, col2= st.columns(2)
+    with col1:
+
+        url = "https://gist.githubusercontent.com/jbrobst/56c13bbbf9d97d187fea01ca62ea5112/raw/e388c4cae20aa53cb5090210a42ebb9b765c0a36/india_states.geojson"
+        response = requests.get(url)
+
+        data1 = json.loads(response.content)
+
+        states_name = []
+        for feature in data1["features"]:
+            states_name.append(feature['properties']['ST_NM'])
+
+        states_name.sort()
+
+        fig_india_1 = px.choropleth(tacyg, geojson= data1, locations='State', featureidkey= 'properties.ST_NM',  
+                                    color= 'Transaction_amount', color_continuous_scale= 'Rainbow', 
+                                    range_color= (tacyg ['Transaction_amount'].min(), tacyg ['Transaction_amount'].max()), 
+                                    hover_name= 'State', title= f"{year} TRANSACTION AMOUNT",  fitbounds="locations",
+                                    height=600, width=600 )
+        
+        fig_india_1.update_geos(visible= False)
+        st.plotly_chart(fig_india_1)
+
+      
+    with col2:
+    
+        fig_india_2 = px.choropleth(tacyg, geojson= data1, locations='State', featureidkey= 'properties.ST_NM',  
+                                    color= 'Transaction_count', color_continuous_scale= 'Rainbow', 
+                                    range_color= (tacyg ['Transaction_count'].min(), tacyg ['Transaction_count'].max()), 
+                                    hover_name= 'State', title= f"{year} TRANSACTION COUNT",  fitbounds="locations",
+                                    height=600, width=600 )
+        
+        fig_india_2.update_geos(visible= False)
+        st.plotly_chart(fig_india_2) 
+
+    return tacy
+
+
+#----------------------------------------------------------------------------------------------
+
+def Transaction_amount_count_Y_Q(df, quarter):
+    #(Boolean Series)
+    tacy = df[df['Quarter'] == quarter]
+    tacy.reset_index(drop = True, inplace= True)
+
+    tacyg = tacy.groupby('State')[['Transaction_count', 'Transaction_amount']].sum()
+    tacyg.reset_index(inplace=True)
+
+
+    col1,col2 = st.columns(2)
+    with col1: 
+
+        fig_amount = px.bar(tacyg, x='State', y='Transaction_amount', title =f"{tacy['Year'].min()} YEAR {quarter} QUARTER Transaction Amount", 
+                            color_discrete_sequence= px.colors.sequential.Aggrnyl, height=650, width=600)
+        st.plotly_chart(fig_amount)
+
+    with col2:    
+        fig_count = px.bar(tacyg,x = 'State', y='Transaction_count', title =f"{tacy['Year'].min()} YEAR {quarter} QUARTER Transaction Count",
+                        color_discrete_sequence= px.colors.sequential.Aggrnyl, height=650, width=600)
+        st.plotly_chart(fig_count)
+
+    col1, col2 = st.columns(2)
+    with col1:   
+
+        url = "https://gist.githubusercontent.com/jbrobst/56c13bbbf9d97d187fea01ca62ea5112/raw/e388c4cae20aa53cb5090210a42ebb9b765c0a36/india_states.geojson"
+        response = requests.get(url)
+
+        data1 = json.loads(response.content)
+
+        states_name = []
+
+        for feature in data1["features"]:
+            print(feature['properties'])
+            states_name.append(feature['properties']['ST_NM'])
+
+        states_name.sort()
+
+        fig_india_1 = px.choropleth(tacyg, geojson=data1, locations='State', featureidkey= 'properties.ST_NM',  
+                                    color= 'Transaction_amount', color_continuous_scale= 'Rainbow', 
+                                    range_color= (tacyg ['Transaction_amount'].min(), tacyg ['Transaction_amount'].max()), 
+                                    hover_name= 'State', title= f"{tacy['Year'].min()} YEAR {quarter} QUARTER TRANSACTION AMOUNT",  fitbounds="locations",
+                                    height=600, width=600 )
+        
+        fig_india_1.update_geos(visible= False)
+        st.plotly_chart(fig_india_1)
+
+    with col2:    
+    
+        fig_india_2 = px.choropleth(tacyg, geojson=data1, locations='State', featureidkey= 'properties.ST_NM',  
+                                    color= 'Transaction_count', color_continuous_scale= 'Rainbow', 
+                                    range_color= (tacyg ['Transaction_count'].min(), tacyg ['Transaction_count'].max()), 
+                                    hover_name= 'State', title= f"{tacy['Year'].min()} YEAR {quarter} QUARTER TRANSACTION COUNT",  fitbounds="locations",
+                                    height=600, width=600 )
+        
+        fig_india_2.update_geos(visible= False)
+        st.plotly_chart(fig_india_2)
+        
+
+
+
 
 
 # Streamlit Part
@@ -161,8 +262,14 @@ elif select == "DATA EXPLORATION":
             col1, col2 = st.columns(2)
             with col1:
 
-                    years = st.slider('Select The Year', Agg_insurance["Year"].min(), Agg_insurance["Year"].max(), Agg_insurance["Year"].min())
-            Transaction_amount_count_Y(Agg_insurance, years)
+                years = st.slider('Select The Year', Agg_insurance["Year"].min(), Agg_insurance["Year"].max(), Agg_insurance["Year"].min())
+            tac_Y = Transaction_amount_count_Y(Agg_insurance, years)
+
+            col1, col2 = st.columns(2)
+            with col1:
+
+                quarter = st.slider('Select The Quarter', tac_Y["Quarter"].min(), tac_Y["Quarter"].max(), tac_Y["Quarter"].min())
+            Transaction_amount_count_Y_Q(tac_Y, quarter)
 
         elif method_1 == "Aggregated Transaction":
             pass
