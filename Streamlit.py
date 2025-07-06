@@ -229,9 +229,33 @@ def Transaction_amount_count_Y_Q(df, quarter):
         
         fig_india_2.update_geos(visible= False)
         st.plotly_chart(fig_india_2)
+
+    return tacy
         
 
+#----------------------------------------------------------------------------------------------
 
+
+def Agg_trans_Transaction_type(df,state):
+
+    tacy = df[df['State'] == state]
+    tacy.reset_index(drop = True, inplace= True)
+
+    tacyg = tacy.groupby('Transaction_type')[['Transaction_count', 'Transaction_amount']].sum()
+    tacyg.reset_index(inplace=True)
+
+    col1, col2 = st.columns(2)
+    with col1:
+        
+        fig_pie_1 = px.pie(data_frame= tacyg, names= "Transaction_type", values= "Transaction_amount", 
+                   width= 600, title= f"{state.upper()} TRANSATION_AMOUNT", hole= 0.5)
+        st.plotly_chart(fig_pie_1)
+
+    with col2:    
+
+        fig_pie_2 = px.pie(data_frame= tacyg, names= "Transaction_type", values= "Transaction_count", 
+                    width= 600, title= f"{state.upper()} TRANSATION_COUNT", hole= 0.5)
+        st.plotly_chart(fig_pie_2)
 
 
 
@@ -272,7 +296,30 @@ elif select == "DATA EXPLORATION":
             Transaction_amount_count_Y_Q(tac_Y, quarter)
 
         elif method_1 == "Aggregated Transaction":
-            pass
+
+            col1, col2 = st.columns(2)
+            with col1:
+
+                years = st.slider('Select The Year', Agg_Transaction["Year"].min(), Agg_Transaction["Year"].max(), Agg_Transaction["Year"].min())
+            Agg_trans_tac_Y = Transaction_amount_count_Y(Agg_Transaction, years)
+
+            col1, col2 = st.columns(2)
+            with col1:
+                states = st.selectbox("Select The State",Agg_trans_tac_Y["State"].unique())
+
+            Agg_trans_Transaction_type(Agg_trans_tac_Y,states)
+
+            col1, col2 = st.columns(2)
+            with col1:
+
+                quarter = st.slider('Select The Quarter',Agg_trans_tac_Y ["Quarter"].min(), Agg_trans_tac_Y["Quarter"].max(), Agg_trans_tac_Y["Quarter"].min())
+            Agg_trans_tac_Y_Q = Transaction_amount_count_Y_Q(Agg_trans_tac_Y, quarter)
+
+            col1, col2 = st.columns(2)
+            with col1:
+                states = st.selectbox("Select The State_Ty",Agg_trans_tac_Y_Q["State"].unique())
+
+            Agg_trans_Transaction_type(Agg_trans_tac_Y_Q,states)
 
         elif method_1 == "Aggregated User":
             pass
