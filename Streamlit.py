@@ -181,7 +181,6 @@ def Transaction_amount_count_Y_Q(df, quarter):
     tacyg = tacy.groupby('State')[['Transaction_count', 'Transaction_amount']].sum()
     tacyg.reset_index(inplace=True)
 
-
     col1,col2 = st.columns(2)
     with col1: 
 
@@ -257,6 +256,44 @@ def Agg_trans_Transaction_type(df,state):
                     width= 600, title= f"{state.upper()} TRANSATION_COUNT", hole= 0.5)
         st.plotly_chart(fig_pie_2)
 
+#---------------------------------------------------------------------------------------------------------------
+
+# Aggregated_User_analysis_1
+
+def Agg_User_plot_1(df, year):
+    aguy = df[df["Year"] == year]
+    aguy.reset_index(drop = True, inplace= True)
+
+    aguyg = pd.DataFrame (aguy.groupby("Brand")["Transaction_count"].sum())
+    aguyg.reset_index(inplace= True)
+
+
+    fig_bar_1 = px.bar(aguyg, x= "Brand", y ="Transaction_count", title= f"{year} BRANDS and TRANSACTION_COUNT",
+                    width=1000, color_discrete_sequence= px.colors.sequential.haline_r, hover_name= "Brand")
+    st.plotly_chart (fig_bar_1)
+
+    return aguy
+
+
+#---------------------------------------------------------------------------------------------------------------
+
+
+#Aggre_User_Analysis_2
+
+def Agg_User_plot_2(df, quarter):
+
+    aguyq = df[df["Quarter"] == quarter]
+    aguyq.reset_index(drop = True, inplace= True)
+
+    aguyqg = pd.DataFrame(aguyq.groupby("Brand")["Transaction_count"].sum())
+    aguyqg.reset_index(inplace=True)
+
+    fig_bar_2 = px.bar(aguyqg, x= "Brand", y ="Transaction_count", title= f"{quarter} QUARTER BRANDS and TRANSACTION_COUNT",
+                        width=1000, color_discrete_sequence= px.colors.sequential.haline_r, hover_name= "Brand")
+    st.plotly_chart (fig_bar_2)
+
+    return aguyq
+
 
 
 # Streamlit Part
@@ -317,12 +354,25 @@ elif select == "DATA EXPLORATION":
 
             col1, col2 = st.columns(2)
             with col1:
-                states = st.selectbox("Select The State_Ty",Agg_trans_tac_Y_Q["State"].unique())
+                states = st.selectbox("Select The State_Type",Agg_trans_tac_Y_Q["State"].unique())
 
             Agg_trans_Transaction_type(Agg_trans_tac_Y_Q,states)
 
         elif method_1 == "Aggregated User":
-            pass
+
+            col1, col2 = st.columns(2)
+            with col1:
+
+                years = st.slider('Select The Year', Agg_User["Year"].min(), Agg_User["Year"].max(), Agg_User["Year"].min())
+            Agg_user_Y = Agg_User_plot_1(Agg_User, years)
+
+            col1, col2 = st.columns(2)
+            with col1:
+
+                quarter = st.slider('Select The Quarter',Agg_user_Y ["Quarter"].min(), Agg_user_Y["Quarter"].max(), Agg_user_Y["Quarter"].min())
+            Agg_user_Y_Q = Agg_User_plot_2(Agg_user_Y, quarter)
+
+            
     
 
     with tab2 :
@@ -348,7 +398,7 @@ elif select == "DATA EXPLORATION":
             pass
 
         elif method_3 == "Top User":
-            pass
+            pass 
 
 
 elif select == "TOP CHARTS":
