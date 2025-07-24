@@ -109,7 +109,7 @@ tabel9 = cursor.fetchall()
 Top_User = pd.DataFrame(tabel9, columns=('State', 'Year', 'Quarter', 'Pincode', 'RegisteredUsers'))
 
 
-#-----------------------------------------------------------------------------------------------------------------------------
+#======================================================================================================================================================================
 
 # Aggregated_Transaction_Year
 
@@ -174,8 +174,8 @@ def Transaction_amount_count_Y(df, year):
 
     return tacy
 
+#-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-#----------------------------------------------------------------------------------------------
 
 # Aggregated_Transaction_Quarter
 
@@ -236,9 +236,8 @@ def Transaction_amount_count_Y_Q(df, quarter):
         st.plotly_chart(fig_india_2)
 
     return tacy
-        
 
-#----------------------------------------------------------------------------------------------
+#-----------------------------------------------------------------------------------------------------------------------------------------------------
 
 # Aggregated_Transaction_State
 
@@ -319,7 +318,7 @@ def Agg_User_plot_3 (df, state):
     # return auyqs
 
 
-#-------------------------------------------------------------------------------------------------------------------------
+#-----------------------------------------------------------------------------------------------------------------------------------------
 
 #Map_Insurance_District
 
@@ -343,8 +342,26 @@ def Map_insur_District(df,state):
                         title= f"{state.upper()} DISTRICT AND TRANSACTION COUNT", color_discrete_sequence= px.colors.sequential.Bluered_r)
         st.plotly_chart(fig_bar_2)
 
+#------------------------------------------------------------------------------------------------------------------------------------------------
 
-#-------------------------------------------------------------------------------------------------------------------------
+#Map_User_plot_1
+
+def Map_User_plot_1(df, year):
+    muy = df[df["Year"] == year]
+    muy.reset_index(drop = True, inplace= True)
+
+    muyg = muy.groupby("State") [["RegisteredUsers", "AppOpens"]].sum()
+    muyg.reset_index(inplace=True)
+
+    fig_line_1 = px.line(muyg, x="State", y=["RegisteredUsers", "AppOpens"], 
+                        color_discrete_map={"RegisteredUsers": "#65AE82", "AppOpens":"#ff7f0e"},
+                        title=f"{year} REGISTERED USERS (vs) APP OPENS", width=1000, height=800, markers=True) 
+    st.plotly_chart(fig_line_1)
+
+    return muy
+
+
+#=========================================================================================================================================================================
 
 
 
@@ -362,120 +379,177 @@ with st.sidebar:
 if select == 'Home':
     pass
 
+
+#====================================================================================================================================================================
+
+
 elif select == "DATA EXPLORATION":
     
     tab1, tab2, tab3 = st.tabs (['Aggregated Analysis', 'Map Analysis', 'Top Analysis'])
 
     with tab1 :
 
-        method_1 = st.radio("Select The Method", ["Aggregated Insurance", "Aggregated Transaction", "Aggregated User"])
+        method_1 = st.radio("Select The Aggregated Method", ["Aggregated Insurance", "Aggregated Transaction", "Aggregated User"])
 
         if method_1 == 'Aggregated Insurance':
 
             col1, col2 = st.columns(2)
             with col1:
 
-                years = st.slider('Select The Year', Agg_insurance["Year"].min(), Agg_insurance["Year"].max(), Agg_insurance["Year"].min())
+                years = st.slider('Select The Agg Insure Year', Agg_insurance["Year"].min(), Agg_insurance["Year"].max(), Agg_insurance["Year"].min())
             tac_Y = Transaction_amount_count_Y(Agg_insurance, years)
 
             col1, col2 = st.columns(2)
             with col1:
 
-                quarter = st.slider('Select The Quarter', tac_Y["Quarter"].min(), tac_Y["Quarter"].max(), tac_Y["Quarter"].min())
+                quarter = st.slider('Select The Agg Insure Quarter', tac_Y["Quarter"].min(), tac_Y["Quarter"].max(), tac_Y["Quarter"].min())
             Transaction_amount_count_Y_Q(tac_Y, quarter)
+
+#--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
         elif method_1 == "Aggregated Transaction":
 
             col1, col2 = st.columns(2)
             with col1:
 
-                years = st.slider('Select The Year', Agg_Transaction["Year"].min(), Agg_Transaction["Year"].max(), Agg_Transaction["Year"].min())
+                years = st.slider('Select The Agg Trans Year', Agg_Transaction["Year"].min(), Agg_Transaction["Year"].max(), Agg_Transaction["Year"].min())
             Agg_trans_tac_Y = Transaction_amount_count_Y(Agg_Transaction, years)
 
             col1, col2 = st.columns(2)
             with col1:
-                states = st.selectbox("Select The State",Agg_trans_tac_Y["State"].unique())
+                states = st.selectbox("Select The Agg Trans State",Agg_trans_tac_Y["State"].unique())
 
             Agg_trans_Transaction_type(Agg_trans_tac_Y,states)
 
             col1, col2 = st.columns(2)
             with col1:
 
-                quarter = st.slider('Select The Quarter',Agg_trans_tac_Y ["Quarter"].min(), Agg_trans_tac_Y["Quarter"].max(), Agg_trans_tac_Y["Quarter"].min())
+                quarter = st.slider('Select The Agg Trans Quarter',Agg_trans_tac_Y ["Quarter"].min(), Agg_trans_tac_Y["Quarter"].max(), Agg_trans_tac_Y["Quarter"].min())
             Agg_trans_tac_Y_Q = Transaction_amount_count_Y_Q(Agg_trans_tac_Y, quarter)
 
             col1, col2 = st.columns(2)
             with col1:
-                states = st.selectbox("Select The State_Type",Agg_trans_tac_Y_Q["State"].unique())
+                states = st.selectbox("Select The Agg Trans State_Type",Agg_trans_tac_Y_Q["State"].unique())
 
             Agg_trans_Transaction_type(Agg_trans_tac_Y_Q,states)
+
+#-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
         elif method_1 == "Aggregated User":
 
             col1, col2 = st.columns(2)
             with col1:
 
-                years = st.slider('Select The Year', Agg_User["Year"].min(), Agg_User["Year"].max(), Agg_User["Year"].min())
+                years = st.slider('Select The Agg User Year', Agg_User["Year"].min(), Agg_User["Year"].max(), Agg_User["Year"].min())
             Agg_user_Y = Agg_User_plot_1(Agg_User, years)
 
             col1, col2 = st.columns(2)
             with col1:
 
-                quarter = st.slider('Select The Quarter',Agg_user_Y ["Quarter"].min(), Agg_user_Y["Quarter"].max(), Agg_user_Y["Quarter"].min())
+                quarter = st.slider('Select The Agg User Quarter',Agg_user_Y ["Quarter"].min(), Agg_user_Y["Quarter"].max(), Agg_user_Y["Quarter"].min())
             Agg_user_Y_Q = Agg_User_plot_2(Agg_user_Y, quarter)
 
 
             col1, col2 = st.columns(2)
             with col1:
-                states = st.selectbox("Select The State", Agg_user_Y_Q["State"].unique())
+                states = st.selectbox("Select The Agg User State", Agg_user_Y_Q["State"].unique())
 
             Agg_User_plot_3(Agg_user_Y_Q, states)
 
+
+#=========================================================================================================================================================================
     
 
-    # with tab2 :
-    #     method_2 = st.radio('Select The Method', ['Map Insurance', 'Map Transaction', "Map User"])
+    with tab2 :
+        method_2 = st.radio('Select The Map Insurance Method', ['Map Insurance', 'Map Transaction', "Map User"])
 
-    #     if method_2 == "Map Insurance":
+        if method_2 == "Map Insurance":
 
-    #         col1, col2 = st.columns(2)
-    #         with col1:
+            col1, col2 = st.columns(2)
+            with col1:
 
-    #             years = st.slider('Select The Year', Map_insurance["Year"].min(), Map_insurance["Year"].max(), Map_insurance["Year"].min())
-    #         map_insur_tac_Y = Transaction_amount_count_Y(Map_insurance, years)
+                years = st.slider('Select The Map Insure Year', Map_insurance["Year"].min(), Map_insurance["Year"].max(), Map_insurance["Year"].min())
+            map_insur_tac_Y = Transaction_amount_count_Y(Map_insurance, years)
 
-    #         col1, col2 = st.columns(2)
-    #         with col1:
-    #             states = st.selectbox("Select The State_MI", map_insur_tac_Y["State"].unique())
+            col1, col2 = st.columns(2)
+            with col1:
+                states = st.selectbox("Select The Map Insure State", map_insur_tac_Y["State"].unique())
 
-    #         Map_insur_District(map_insur_tac_Y, states)
+            Map_insur_District(map_insur_tac_Y, states)
 
-    #         col1, col2 = st.columns(2)
-    #         with col1:
+            col1, col2 = st.columns(2)
+            with col1:
 
-    #             quarter = st.slider('Select The Quarter',map_insur_tac_Y ["Quarter"].min(), map_insur_tac_Y["Quarter"].max(), map_insur_tac_Y["Quarter"].min())
-    #         map_insur_tac_Y_Q = Transaction_amount_count_Y_Q(map_insur_tac_Y, quarter)
+                quarter = st.slider('Select The Map Insures Quarter',map_insur_tac_Y ["Quarter"].min(), map_insur_tac_Y["Quarter"].max(), map_insur_tac_Y["Quarter"].min())
+            map_insur_tac_Y_Q = Transaction_amount_count_Y_Q(map_insur_tac_Y, quarter)
+
+            col1, col2 = st.columns(2)
+            with col1:
+                states = st.selectbox("Select The Map Insure State_Type",map_insur_tac_Y_Q["State"].unique())
+
+            Map_insur_District(map_insur_tac_Y_Q, states)
+
+#-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+        elif method_2 == "Map Transaction":
+            
+            col1, col2 = st.columns(2)
+            with col1:
+
+                years = st.slider('Select The Map Trans Year', Map_Transaction["Year"].min(), Map_Transaction["Year"].max(), Map_Transaction["Year"].min() )
+            map_trans_tac_Y = Transaction_amount_count_Y(Map_Transaction, years)
+
+            col1, col2 = st.columns(2)
+            with col1:
+                states = st.selectbox("Select The Map Trans State", map_trans_tac_Y["State"].unique())
+
+            Map_insur_District(map_trans_tac_Y, states)
+
+            col1, col2 = st.columns(2)
+            with col1:
+
+                quarter = st.slider('Select The Map Trans Quarter',map_trans_tac_Y ["Quarter"].min(), map_trans_tac_Y["Quarter"].max(), map_trans_tac_Y["Quarter"].min())
+            map_trans_tac_Y_Q = Transaction_amount_count_Y_Q(map_trans_tac_Y, quarter)
+
+            col1, col2 = st.columns(2)
+            with col1:
+                states = st.selectbox("Select The Map Trans State_Type", map_trans_tac_Y_Q["State"].unique())
+
+            Map_insur_District(map_trans_tac_Y_Q, states)
+#-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+        elif method_2 == "Map User":
+
+            col1, col2 = st.columns(2)
+            with col1:
+
+                years = st.slider('Select The Map Trans Year', Map_User["Year"].min(), Map_User["Year"].max(), Map_User["Year"].min() )
+            map_user_Y = Map_User_plot_1(Map_User, years)
+            
 
 
-    #     elif method_2 == "Map Transaction":
-    #         pass
 
-    #     elif method_2 == "Map User":
-            pass
+#=========================================================================================================================================================================
+
 
     with tab3 :
 
-        method_3 = st.radio('select The Method', ["Top Insurance", "Top Transaction", "Top User"])
+        method_3 = st.radio('select The Map User Method', ["Top Insurance", "Top Transaction", "Top User"])
 
         if method_3 == "Top Insurance":
             pass
-        
+
+#-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
         elif method_3 == "Top Transaction":
             pass
+
+#-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
         elif method_3 == "Top User":
             pass 
 
+#-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 elif select == "TOP CHARTS":
     pass
