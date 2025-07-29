@@ -360,6 +360,25 @@ def Map_User_plot_1(df, year):
 
     return muy
 
+#------------------------------------------------------------------------------------------------------------------------------------------------
+
+#Map_User_plot_2
+
+def Map_User_plot_2(df, quarter):
+    muyq = df[df["Quarter"] == quarter]
+    muyq.reset_index(drop = True, inplace= True)
+
+    muyqg = muyq.groupby("State") [["RegisteredUsers", "AppOpens"]].sum()
+    muyqg.reset_index(inplace=True)
+
+
+    fig_line_1 = px.line(muyqg, x="State", y=["RegisteredUsers", "AppOpens"], 
+                        color_discrete_map={"RegisteredUsers": "#12229E", "AppOpens":"#ff7f0e"},
+                        title=f"{df['Year'].min()} YEARS {quarter} QUARTER REGISTERED USERS (vs) APP OPENS", width=1000, height=800, markers=True) 
+    st.plotly_chart(fig_line_1)
+
+    return muyq
+
 
 #=========================================================================================================================================================================
 
@@ -508,7 +527,7 @@ elif select == "DATA EXPLORATION":
             col1, col2 = st.columns(2)
             with col1:
 
-                quarter = st.slider('Select The Map Trans Quarter',map_trans_tac_Y ["Quarter"].min(), map_trans_tac_Y["Quarter"].max(), map_trans_tac_Y["Quarter"].min())
+                quarter = st.slider('Select The Map Trans Quarter_mt',map_trans_tac_Y ["Quarter"].min(), map_trans_tac_Y["Quarter"].max(), map_trans_tac_Y["Quarter"].min())
             map_trans_tac_Y_Q = Transaction_amount_count_Y_Q(map_trans_tac_Y, quarter)
 
             col1, col2 = st.columns(2)
@@ -523,9 +542,14 @@ elif select == "DATA EXPLORATION":
             col1, col2 = st.columns(2)
             with col1:
 
-                years = st.slider('Select The Map Trans Year', Map_User["Year"].min(), Map_User["Year"].max(), Map_User["Year"].min() )
+                years = st.slider('Select The Map Trans Year MU', Map_User["Year"].min(), Map_User["Year"].max(), Map_User["Year"].min() )
             map_user_Y = Map_User_plot_1(Map_User, years)
-            
+
+            col1, col2 = st.columns(2)
+            with col1:
+
+                quarter = st.slider('Select The Map Trans Quarter_mu',map_user_Y ["Quarter"].min(), map_user_Y["Quarter"].max(), map_user_Y["Quarter"].min())
+            map_user_Y_Q = Map_User_plot_2 (map_user_Y, quarter)
 
 
 
