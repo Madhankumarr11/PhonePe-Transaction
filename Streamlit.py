@@ -127,15 +127,15 @@ def Transaction_amount_count_Y(df, year):
 
     with col1:
 
-        fig_amount = px.bar(tacyg, x='State', y='Transaction_amount', title =f'{year} Transaction Amount', 
+        fig_Amount = px.bar(tacyg, x='State', y='Transaction_amount', title =f'{year} Transaction Amount', 
                             color_discrete_sequence= px.colors.sequential.Aggrnyl, height=650, width=600)
-        st.plotly_chart(fig_amount)
+        st.plotly_chart(fig_Amount)
 
     with col2:    
 
-        fig_count = px.bar(tacyg,x = 'State', y='Transaction_count', title =f'{year} Transaction Count',
+        fig_Count = px.bar(tacyg,x = 'State', y='Transaction_count', title =f'{year} Transaction Count',
                         color_discrete_sequence= px.colors.sequential.Bluered_r, height=650, width=600)
-        st.plotly_chart(fig_count)
+        st.plotly_chart(fig_Count)
 
     col1, col2= st.columns(2)
     with col1:
@@ -422,6 +422,41 @@ def Top_insurance_plot_1(df, state):
         st.plotly_chart(fig_top_insur_bar_2)
 
 
+#----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# Top_User_plot_1
+
+def Top_User_plot_1(df, year):
+    tuy = df[df["Year"] == year]
+    tuy.reset_index(drop = True, inplace= True)
+
+    tuyg = pd.DataFrame (tuy.groupby(["State", "Quarter"])["RegisteredUsers"].sum())
+    tuyg.reset_index(inplace= True)
+
+    fig_top_plot_1 = px.bar(tuyg, x= "State", y= "RegisteredUsers", color= "Quarter", width=1000, height=800, 
+                            color_discrete_sequence= px.colors.sequential.Burgyl, hover_name= "State",
+                            title= f"{year} REGISTERED USER")
+    st.plotly_chart(fig_top_plot_1)
+
+    return tuy
+
+#----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+#Top_User_plot_2
+
+def Top_User_plot_2(df, State):
+
+    tuys = df[df["State"]== State]
+    tuys.reset_index(drop= True, inplace= True)
+
+    fig_top_plot_2 = px.bar(tuys, x= "Quarter", y= "RegisteredUsers", hover_data= "Pincode",  width=1000, height=800, 
+                                color_continuous_scale = px.colors.sequential.Viridis, 
+                                title= "REGISTERED USER AND PINCODE QUARTER DATA")
+    st.plotly_chart(fig_top_plot_2)
+
+# return tuy
+
+
 #=========================================================================================================================================================================
 
 
@@ -582,20 +617,20 @@ elif select == "DATA EXPLORATION":
             col1, col2 = st.columns(2)
             with col1:
 
-                years = st.slider('Select The Map Trans Year_MU', Map_User["Year"].min(), Map_User["Year"].max(), Map_User["Year"].min() )
+                years = st.slider('Select The Map User Year', Map_User["Year"].min(), Map_User["Year"].max(), Map_User["Year"].min() )
             Map_User_Y = Map_User_plot_1(Map_User, years)
 
 
             col1, col2 = st.columns(2)
             with col1:
 
-                quarter = st.slider('Select The Map Trans Quarter_MU',Map_User_Y ["Quarter"].min(), Map_User_Y["Quarter"].max(), Map_User_Y["Quarter"].min())
+                quarter = st.slider('Select The Map User Quarter',Map_User_Y ["Quarter"].min(), Map_User_Y["Quarter"].max(), Map_User_Y["Quarter"].min())
             Map_User_Y_Q = Map_User_plot_2(Map_User_Y, quarter)
 
 
             col1, col2 = st.columns(2)
             with col1:
-                states = st.selectbox("Select The Map Trans State_MU", Map_User_Y_Q["State"].unique())
+                states = st.selectbox("Select The Map User State", Map_User_Y_Q["State"].unique())
             Map_User_plot_3(Map_User_Y_Q, states)
 
 
@@ -612,21 +647,21 @@ elif select == "DATA EXPLORATION":
             col1, col2 = st.columns(2)
             with col1:
 
-                years = st.slider('Select The Map Insure Year_ti', Top_insurance["Year"].min(), Top_insurance["Year"].max(), Top_insurance["Year"].min())
+                years = st.slider('Select The Top Insure Year', Top_insurance["Year"].min(), Top_insurance["Year"].max(), Top_insurance["Year"].min())
             Top_insur_tac_Y = Transaction_amount_count_Y(Top_insurance, years)
 
 
             col1, col2 = st.columns(2)
             with col1:
 
-                states = st.selectbox("Select The State_ti", Top_insur_tac_Y["State"].unique())
+                states = st.selectbox("Select The Top Insure State", Top_insur_tac_Y["State"].unique())
             Top_insurance_plot_1(Top_insur_tac_Y, states)
 
 
             col1, col2 = st.columns(2)
             with col1:
-
-                quarter = st.slider('Select The Map Trans Quarter_ti',Top_insur_tac_Y ["Quarter"].min(), Top_insur_tac_Y["Quarter"].max(), Top_insur_tac_Y["Quarter"].min())
+                
+                quarter = st.slider('Select The Top Insure Quarter',Top_insur_tac_Y ["Quarter"].min(), Top_insur_tac_Y["Quarter"].max(), Top_insur_tac_Y["Quarter"].min())
             Top_insur_tac_Y_Q = Transaction_amount_count_Y_Q(Top_insur_tac_Y, quarter)
 
 
@@ -636,27 +671,40 @@ elif select == "DATA EXPLORATION":
             col1, col2 = st.columns(2)
             with col1:
 
-                years = st.slider('Select The Map Insure Year_tt', Top_Transaction["Year"].min(), Top_Transaction["Year"].max(), Top_Transaction["Year"].min())
+                years = st.slider('Select The Top Trans Year', Top_Transaction["Year"].min(), Top_Transaction["Year"].max(), Top_Transaction["Year"].min())
             Top_trans_tac_Y = Transaction_amount_count_Y(Top_Transaction, years)
 
 
             col1, col2 = st.columns(2)
             with col1:
 
-                states = st.selectbox("Select The State_tt", Top_trans_tac_Y["State"].unique())
+                states = st.selectbox("Select The Top Trans State", Top_trans_tac_Y["State"].unique())
             Top_insurance_plot_1(Top_trans_tac_Y, states)
 
 
             col1, col2 = st.columns(2)
             with col1:
 
-                quarter = st.slider('Select The Map Trans Quarter_tt',Top_trans_tac_Y ["Quarter"].min(), Top_trans_tac_Y["Quarter"].max(), Top_trans_tac_Y["Quarter"].min())
+                quarter = st.slider('Select The Top Trans Quarter',Top_trans_tac_Y ["Quarter"].min(), Top_trans_tac_Y["Quarter"].max(), Top_trans_tac_Y["Quarter"].min())
             Top_trans_tac_Y_Q = Transaction_amount_count_Y_Q(Top_trans_tac_Y, quarter)
 
 #-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
         elif method_3 == "Top User":
-            pass 
+
+            col1, col2 = st.columns(2)
+            with col1:
+
+                years = st.slider('Select The Top User Year', Top_User["Year"].min(), Top_User["Year"].max(), Top_User["Year"].min())
+            Top_User_Y = Top_User_plot_1(Top_User, years)
+
+            col1, col2 = st.columns(2)
+            with col1:
+
+                states = st.selectbox("Select The Top User State", Top_User_Y["State"].unique())
+            Top_User_plot_2(Top_User_Y, states)
+
+          
 
 #-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
