@@ -454,8 +454,165 @@ def Top_User_plot_2(df, State):
                                 title= "REGISTERED USER AND PINCODE QUARTER DATA")
     st.plotly_chart(fig_top_plot_2)
 
-# return tuy
 
+#=========================================================================================================================================================================
+
+# Sql Query_1
+
+def top_chart_transaction_amount(table_name): 
+    
+    connect = psycopg2.connect(
+            host = "localhost",
+            user = 'postgres',
+            port = '5432',
+            password = '01234',
+            database = 'phonepy_transaction'
+    )
+
+    connect.set_isolation_level (ISOLATION_LEVEL_AUTOCOMMIT)
+
+    cursor = connect.cursor()
+
+    # Plot_1
+
+    query1 = f'''select state, Sum(transaction_amount) as transaction_amount
+            from {table_name}
+            group  by state
+            order by transaction_amount DESC
+            LIMIT 10;'''
+
+    cursor.execute(query1)
+    tabel_1 = cursor.fetchall()
+    connect.commit()
+
+
+    df_1 = pd.DataFrame(tabel_1, columns= ("state", "transaction_amount"))
+
+    col1, col2 = st.columns(2)
+    with col1:
+
+        fig_amount_1 = px.bar(df_1, x='state', y='transaction_amount', title = 'TOP 10 OF TRANSACTION AMOUNT', 
+                                color_discrete_sequence= px.colors.sequential.Aggrnyl, height=650, width=600)
+        st.plotly_chart(fig_amount_1)
+
+
+
+    # Plot_2
+
+    query2 = f'''select state, Sum(transaction_amount) as transaction_amount
+                from {table_name}
+                group  by state
+                order by transaction_amount
+                LIMIT 10;'''
+
+    cursor.execute(query2)
+    tabel_2 = cursor.fetchall()
+    connect.commit()
+
+    df_2 = pd.DataFrame(tabel_2, columns= ("state", "transaction_amount"))
+
+    with col2:
+
+        fig_amount_2 = px.bar(df_2, x='state', y='transaction_amount', title = 'LAST 10 OF TRANSACTION AMOUNT', 
+                                color_discrete_sequence= px.colors.sequential.Aggrnyl_r, height=700, width=600)
+        st.plotly_chart(fig_amount_2)
+
+
+    # Plot_3
+
+    query3 = f'''select state, Avg(transaction_amount) as transaction_amount
+                from {table_name}
+                group  by state
+                order by transaction_amount;'''
+
+    cursor.execute(query3)
+    tabel_3 = cursor.fetchall()
+    connect.commit()
+
+    df_3 = pd.DataFrame(tabel_3, columns= ("state", "transaction_amount"))
+
+    fig_amount_3 = px.bar(df_3, y='state', x='transaction_amount', title = 'AVERAGE OF TRANSACTION AMOUNT', hover_name= "state", orientation= 'h', 
+                            color_discrete_sequence= px.colors.sequential.Bluered_r, height=800, width=1000)
+    st.plotly_chart(fig_amount_3)
+
+#----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# Sql Query_2
+
+def top_chart_transaction_count(table_name): 
+    
+    connect = psycopg2.connect(
+            host = "localhost",
+            user = 'postgres',
+            port = '5432',
+            password = '01234',
+            database = 'phonepy_transaction'
+    )
+
+    connect.set_isolation_level (ISOLATION_LEVEL_AUTOCOMMIT)
+
+    cursor = connect.cursor()
+
+    # Plot_1
+
+    query1 = f'''select state, Sum(transaction_count) as transaction_count
+            from {table_name}
+            group  by state
+            order by transaction_count DESC
+            LIMIT 10;'''
+
+    cursor.execute(query1)
+    tabel_1 = cursor.fetchall()
+    connect.commit()
+
+    df_1 = pd.DataFrame(tabel_1, columns= ("state", "transaction_count"))
+
+    col1, col2 = st.columns(2)
+    with col1:
+
+        fig_amount_1 = px.bar(df_1, x='state', y='transaction_count', title = 'TOP 10 OF TRANSACTION COUNT', 
+                                color_discrete_sequence= px.colors.sequential.Aggrnyl, height=650, width=600)
+        st.plotly_chart(fig_amount_1)
+
+
+
+    # Plot_2
+
+    query2 = f'''select state, Sum(transaction_count) as transaction_count
+                from {table_name}
+                group  by state
+                order by transaction_count
+                LIMIT 10;'''
+
+    cursor.execute(query2)
+    tabel_2 = cursor.fetchall()
+    connect.commit()
+
+    df_2 = pd.DataFrame(tabel_2, columns= ("state", "transaction_count"))
+
+    with col2:
+
+        fig_amount_2 = px.bar(df_2, x='state', y='transaction_count', title = 'LAST 10 OF TRANSACTION COUNT', 
+                                color_discrete_sequence= px.colors.sequential.Aggrnyl_r, height=700, width=600)
+        st.plotly_chart(fig_amount_2)
+
+
+    # Plot_3
+
+    query3 = f'''select state, Avg(transaction_count) as transaction_count
+                from {table_name}
+                group  by state
+                order by transaction_count;'''
+
+    cursor.execute(query3)
+    tabel_3 = cursor.fetchall()
+    connect.commit()
+
+    df_2 = pd.DataFrame(tabel_3, columns= ("state", "transaction_count"))
+
+    fig_amount_3 = px.bar(df_2, y='state', x='transaction_count', title = 'AVERAGE OF TRANSACTION COUNT', hover_name= "state", orientation= 'h', 
+                            color_discrete_sequence= px.colors.sequential.Bluered_r, height=800, width=1000)
+    st.plotly_chart(fig_amount_3)
 
 #=========================================================================================================================================================================
 
@@ -709,5 +866,77 @@ elif select == "DATA EXPLORATION":
 #-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 elif select == "TOP CHARTS":
-    pass
+    
+    question = st.selectbox("Select the Question", ["1. Transaction Amount and Count of Aggregated Insurance",
+                                                    "2. Transaction Amount and Count of Map Insurance",
+                                                    "3. Transaction Amount and Count of Top Insurance",
+                                                    "4. Transaction Amount and Count of Aggregated Transaction",
+                                                    "5. Transaction Amount and Count of Map Transaction",
+                                                    "6. Transaction Amount and Count of Top Transaction",
+                                                    "7. Transaction Count of Aggregated User",
+                                                    "8. Registered User of Map User",
+                                                    "9. App Opens of Map User",
+                                                    "10. Registered User of Top User",
+                                                    ])
+    
+    if question == "1. Transaction Amount and Count of Aggregated Insurance":
 
+        st.subheader("TRANSACTION AMOUNT")
+        top_chart_transaction_amount("agg_insurance")
+
+        st.subheader("TRANSACTION COUNT")
+        top_chart_transaction_count("agg_insurance")
+
+
+    elif question == "2. Transaction Amount and Count of Map Insurance":
+
+        st.subheader("TRANSACTION AMOUNT")
+        top_chart_transaction_amount("map_insurance")
+
+        st.subheader("TRANSACTION COUNT")
+        top_chart_transaction_count("map_insurance")
+
+    
+    elif question == "3. Transaction Amount and Count of Top Insurance":
+
+        st.subheader("TRANSACTION AMOUNT")
+        top_chart_transaction_amount("top_insurance")
+
+        st.subheader("TRANSACTION COUNT")
+        top_chart_transaction_count("top_insurance")
+
+    
+    elif question == "4. Transaction Amount and Count of Aggregated Transaction":
+
+        st.subheader("TRANSACTION AMOUNT")
+        top_chart_transaction_amount("agg_transaction")
+
+        st.subheader("TRANSACTION COUNT")
+        top_chart_transaction_count("agg_transaction")
+
+    
+    elif question == "5. Transaction Amount and Count of Map Transaction":
+
+        st.subheader("TRANSACTION AMOUNT")
+        top_chart_transaction_amount("map_transaction")
+
+        st.subheader("TRANSACTION COUNT")
+        top_chart_transaction_count("map_transaction")
+
+    
+    elif question == "6. Transaction Amount and Count of Top Transaction":
+
+        st.subheader("TRANSACTION AMOUNT")
+        top_chart_transaction_amount("top_transaction")
+
+        st.subheader("TRANSACTION COUNT")
+        top_chart_transaction_count("top_transaction")
+
+
+    elif question == "7. Transaction Count of Aggregated User":
+
+        st.subheader("TRANSACTION COUNT")
+        top_chart_transaction_count("agg_user")
+
+
+    
