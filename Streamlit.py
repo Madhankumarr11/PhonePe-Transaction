@@ -608,9 +608,9 @@ def top_chart_transaction_count(table_name):
     tabel_3 = cursor.fetchall()
     connect.commit()
 
-    df_2 = pd.DataFrame(tabel_3, columns= ("state", "transaction_count"))
+    df_3 = pd.DataFrame(tabel_3, columns= ("state", "transaction_count"))
 
-    fig_amount_3 = px.bar(df_2, y='state', x='transaction_count', title = 'AVERAGE OF TRANSACTION COUNT', hover_name= "state", orientation= 'h', 
+    fig_amount_3 = px.bar(df_3, y='state', x='transaction_count', title = 'AVERAGE OF TRANSACTION COUNT', hover_name= "state", orientation= 'h', 
                             color_discrete_sequence= px.colors.sequential.Bluered_r, height=800, width=1000)
     st.plotly_chart(fig_amount_3)
 
@@ -651,10 +651,9 @@ def top_chart_registered_users(table_name, state):
     col1, col2 = st.columns(2)
 
     with col1:
-        fig_amount_1 = px.bar(df_1, x='district', y='registeredusers', title = 'TOP 10 REGISTERED USER', hover_name= "district",
+        fig_amount_1 = px.bar(df_1, x='district', y='registeredusers', title = 'TOP 10 REGISTERED USERS', hover_name= "district",
                                 color_discrete_sequence= px.colors.sequential.Aggrnyl, height=650, width=600)
         st.plotly_chart(fig_amount_1)
-
 
 
     # Plot_2
@@ -674,7 +673,7 @@ def top_chart_registered_users(table_name, state):
 
     with col2:
 
-        fig_amount_2 = px.bar(df_2, x='district', y='registeredusers', title = 'LAST 10 REGISTERED USER', hover_name= "district",
+        fig_amount_2 = px.bar(df_2, x='district', y='registeredusers', title = 'LAST 10 REGISTERED USERS', hover_name= "district",
                                 color_discrete_sequence= px.colors.sequential.Aggrnyl_r, height=650, width=600)
         st.plotly_chart(fig_amount_2)
 
@@ -691,9 +690,9 @@ def top_chart_registered_users(table_name, state):
     tabel_3 = cursor.fetchall()
     connect.commit()
 
-    df_2 = pd.DataFrame(tabel_3, columns= ('district', 'registeredusers'))
+    df_3 = pd.DataFrame(tabel_3, columns= ('district', 'registeredusers'))
 
-    fig_amount_3 = px.bar(df_2, y='district', x='registeredusers', title = 'AVERAGE OF REGISTERED USER', hover_name= "district", orientation= 'h', 
+    fig_amount_3 = px.bar(df_3, y='district', x='registeredusers', title = 'AVERAGE OF REGISTERED USERS', hover_name= "district", orientation= 'h', 
                             color_discrete_sequence= px.colors.sequential.Bluered_r, height=800, width=1000)
     st.plotly_chart(fig_amount_3)
 
@@ -774,9 +773,92 @@ def top_chart_appopens(table_name, state):
     tabel_3 = cursor.fetchall()
     connect.commit()
 
-    df_2 = pd.DataFrame(tabel_3, columns= ('district', 'appopens'))
+    df_3 = pd.DataFrame(tabel_3, columns= ('district', 'appopens'))
 
-    fig_amount_3 = px.bar(df_2, y='district', x='appopens', title = 'AVERAGE OF APPOPENS', hover_name= "district", orientation= 'h', 
+    fig_amount_3 = px.bar(df_3, y='district', x='appopens', title = 'AVERAGE OF APPOPENS', hover_name= "district", orientation= 'h', 
+                            color_discrete_sequence= px.colors.sequential.Bluered_r, height=650, width=600)
+    st.plotly_chart(fig_amount_3)
+
+
+
+#----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+# Sql Query_5
+
+def top_chart_registered_user(table_name): 
+    
+    connect = psycopg2.connect(
+            host = "localhost",
+            user = 'postgres',
+            port = '5432',
+            password = '01234',
+            database = 'phonepy_transaction'
+    )
+
+    connect.set_isolation_level (ISOLATION_LEVEL_AUTOCOMMIT)
+
+    cursor = connect.cursor()
+
+    # Plot_1
+
+    query1 = f'''select state, sum(registeredusers) as registereduser
+                 from {table_name}
+                 group by state 
+                 order by registereduser desc
+                 limit 10;'''
+
+    cursor.execute(query1)
+    tabel_1 = cursor.fetchall()
+    connect.commit()
+
+    df_1 = pd.DataFrame(tabel_1, columns= ("state", "registereduser"))
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+
+        fig_amount_1 = px.bar(df_1, x='state', y='registereduser', title = 'TOP 10 REGISTERED USER', hover_name= "state",
+                                color_discrete_sequence= px.colors.sequential.Aggrnyl, height=650, width=600)
+        st.plotly_chart(fig_amount_1)
+
+
+
+    # Plot_2
+
+    query2 = f'''select state, sum(registeredusers) as registereduser
+                 from {table_name}
+                 group by state 
+                 order by registereduser
+                 limit 10;'''
+
+    cursor.execute(query2)
+    tabel_2 = cursor.fetchall()
+    connect.commit()
+
+    df_2 = pd.DataFrame(tabel_2, columns= ("state", "registereduser"))
+
+    with col2:
+
+        fig_amount_2 = px.bar(df_2, x='state', y='registereduser', title = 'LAST 10 REGISTERED USER', hover_name= "state",
+                                color_discrete_sequence= px.colors.sequential.Aggrnyl_r, height=650, width=600)
+        st.plotly_chart(fig_amount_2)
+
+
+    # Plot_3
+
+    query3 = f'''select state, avg(registeredusers) as registereduser
+                 from {table_name}
+                 group by state 
+                 order by registereduser;'''
+
+    cursor.execute(query3)
+    tabel_3 = cursor.fetchall()
+    connect.commit()
+
+    df_3 = pd.DataFrame(tabel_3, columns= ('state', 'registereduser'))
+
+    fig_amount_3 = px.bar(df_2, y='state', x='registereduser', title = 'AVERAGE OF REGISTERED USER', hover_name= "state", orientation= 'h', 
                             color_discrete_sequence= px.colors.sequential.Bluered_r, height=650, width=600)
     st.plotly_chart(fig_amount_3)
 
@@ -1111,7 +1193,7 @@ elif select == "TOP CHARTS":
         
         states = st.selectbox("Select the State", Map_User["State"].unique())
         
-        st.subheader("REGISTERED USER")
+        st.subheader("REGISTERED USERS")
         top_chart_registered_users("map_user", states)
 
 
@@ -1120,6 +1202,12 @@ elif select == "TOP CHARTS":
         states = st.selectbox("Select the State", Map_User["State"].unique())
         st.subheader("APPOPENS")
         top_chart_appopens("map_user", states)
+
+
+    elif question == "10. Registered User of Top User":
+        
+        st.subheader("REGISTERED USER")
+        top_chart_registered_user("top_user")
 
 
     
