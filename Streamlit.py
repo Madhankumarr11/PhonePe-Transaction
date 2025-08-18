@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 import plotly.express as px
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 import requests
+from PIL import Image
 
 import os
 import json
@@ -878,9 +879,59 @@ with st.sidebar:
 
 # Home Menu Details
 
-if select == 'Home':
-    pass
+if select == "Home":
 
+    col1,col2= st.columns(2)
+
+    with col1:
+        st.header("PHONEPE")
+        st.subheader("INDIA'S BEST TRANSACTION APP")
+        st.markdown("PhonePe  is an Indian digital payments and financial technology company")
+        st.write("****FEATURES****")
+        st.write("****Credit & Debit card linking****")
+        st.write("****Bank Balance check****")
+        st.write("****Money Storage****")
+        st.write("****PIN Authorization****")
+        st.download_button("DOWNLOAD THE APP NOW", "https://www.phonepe.com/app-download/")
+
+        
+    with col2:
+        st.image(Image.open(r"D:\SRMK\Guvi\PhonePe-Transaction\Phonepe circule.jpeg"),width = 500)
+
+    col3,col4= st.columns(2)
+    
+    with col3:
+        st.image(Image.open("D:\SRMK\Guvi\PhonePe-Transaction\Phonepe Sacn.jpeg"),width = 500)
+
+    with col4:
+        st.write("****Easy Transactions****")
+        st.write("****One App For All Your Payments****")
+        st.write("****Your Bank Account Is All You Need****")
+        st.write("****Multiple Payment Modes****")
+        st.write("****PhonePe Merchants****")
+        st.write("****Multiple Ways To Pay****")
+        st.write("****1.Direct Transfer & More****")
+        st.write("****2.QR Code****")
+        st.write("****Earn Great Rewards****")
+
+    col5,col6= st.columns(2)
+
+    with col5:
+        st.markdown(" ")
+        st.markdown(" ")
+        st.markdown(" ")
+        st.markdown(" ")
+        st.markdown(" ")
+        st.markdown(" ")
+        st.markdown(" ")
+        st.markdown(" ")
+        st.markdown(" ")
+        st.write("****No Wallet Top-Up Required****")
+        st.write("****Pay Directly From Any Bank To Any Bank A/C****")
+        st.write("****Instantly & Free****")
+
+    with col6:
+        st.image(Image.open(r"D:\SRMK\Guvi\PhonePe-Transaction\Phonepe PieChart.jpg"),width = 500)
 
 #====================================================================================================================================================================
 
